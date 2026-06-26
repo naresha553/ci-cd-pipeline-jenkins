@@ -1,0 +1,29 @@
+# Maven
+app/target/
+*.jar
+*.war
+*.class
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.lock.hcl
+terraform/kubeconfig
+
+# Jenkins / local secrets
+.env
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Kind / kube
+kubeconfig
+kind-config.yaml

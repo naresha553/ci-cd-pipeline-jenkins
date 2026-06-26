@@ -1,0 +1,32 @@
+jenkins:
+  systemMessage: "Local CI/CD Lab - Jenkins"
+  numExecutors: 2
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - usernamePassword:
+              scope: GLOBAL
+              id: "gitea-credentials"
+              username: "${GITEA_USER:-gitea}"
+              password: "${GITEA_PASSWORD:-gitea123}"
+              description: "Gitea credentials for pipeline checkout"
+          - string:
+              scope: GLOBAL
+              id: "sonar-token"
+              secret: "${SONAR_TOKEN:-changeme}"
+              description: "SonarQube token"
+
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+      - name: "SonarQube"
+        serverUrl: "http://sonarqube:9000"
+        credentialsId: "sonar-token"
+        triggers:
+          skipScmCause: false
+          skipUpstreamCause: false

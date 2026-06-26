@@ -1,0 +1,10 @@
+workflow-aggregator
+git
+configuration-as-code
+credentials-binding
+pipeline-stage-view
+docker-workflow
+kubernetes-cli
+sonar
+junit
+gitea

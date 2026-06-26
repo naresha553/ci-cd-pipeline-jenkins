@@ -1,0 +1,103 @@
+services:
+  jenkins:
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
+    container_name: cicd-jenkins
+    user: root
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./:/var/jenkins_home/cicd-lab
+      - ./jenkins/casc.yaml:/var/jenkins_home/casc_configs/casc.yaml:ro
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
+      - GITEA_USER=gitea
+      - GITEA_PASSWORD=gitea123
+      - SONAR_TOKEN=changeme
+    networks:
+      - cicd-net
+    depends_on:
+      - sonarqube
+      - gitea
+      - registry
+    restart: unless-stopped
+
+  sonarqube:
+    image: sonarqube:10.4-community
+    container_name: cicd-sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    networks:
+      - cicd-net
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: cicd-postgres
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - cicd-net
+    restart: unless-stopped
+
+  gitea:
+    image: gitea/gitea:1.21
+    container_name: cicd-gitea
+    ports:
+      - "3000:3000"
+      - "2222:22"
+    environment:
+      USER_UID: "1000"
+      USER_GID: "1000"
+      GITEA__server__ROOT_URL: http://localhost:3000/
+      GITEA__server__DOMAIN: localhost
+      GITEA__service__DISABLE_REGISTRATION: "false"
+    volumes:
+      - gitea_data:/data
+    networks:
+      - cicd-net
+    restart: unless-stopped
+
+  registry:
+    image: registry:2
+    container_name: cicd-registry
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry_data:/var/lib/registry
+    networks:
+      - cicd-net
+    restart: unless-stopped
+
+networks:
+  cicd-net:
+    name: cicd-net
+    driver: bridge
+
+volumes:
+  jenkins_home:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgres_data:
+  gitea_data:
+  registry_data:
