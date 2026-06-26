@@ -1,5 +1,5 @@
 output "cluster_name" {
-  value = kind_cluster.default.name
+  value = var.cluster_name
 }
 
 output "namespace" {

@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         APP_NAME        = 'demo-app'
-        REGISTRY_PUSH   = 'registry:5000'
+        REGISTRY_PUSH   = 'localhost:5000'
         REGISTRY_PULL   = 'host.docker.internal:5000'
         IMAGE_TAG       = "${env.BUILD_NUMBER ?: 'latest'}"
         KUBECONFIG      = "${WORKSPACE}/kubeconfig"
