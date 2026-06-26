@@ -21,3 +21,9 @@ variable "registry_host" {
   type        = string
   default     = "host.docker.internal:5000"
 }
+
+variable "node_image" {
+  description = "kind node image (pin to a known-good Kubernetes version)"
+  type        = string
+  default     = "kindest/node:v1.29.4"
+}

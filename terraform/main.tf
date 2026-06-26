@@ -17,6 +17,7 @@ provider "kind" {}
 
 resource "kind_cluster" "default" {
   name            = var.cluster_name
+  node_image      = var.node_image
   wait_for_ready  = true
   kubeconfig_path = var.kubeconfig_path
 
