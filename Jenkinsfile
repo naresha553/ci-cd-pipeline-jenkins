@@ -60,7 +60,7 @@ pipeline {
                             mvn -B sonar:sonar \
                               -Dsonar.projectKey=${APP_NAME} \
                               -Dsonar.host.url=${SONAR_HOST} \
-                              -Dsonar.login=\${SONAR_TOKEN}
+                              -Dsonar.token=\${SONAR_TOKEN}
                         """
                     }
                 }
@@ -72,7 +72,8 @@ pipeline {
                 sh 'chmod +x scripts/*.sh || true'
                 sh './scripts/connect-jenkins-to-kind.sh || true'
                 dir('terraform') {
-                    sh 'terraform init -input=false'
+                    sh 'rm -f .terraform.lock.hcl'
+                    sh 'terraform init -input=false -upgrade'
                     sh 'terraform apply -auto-approve -input=false'
                 }
                 sh './scripts/connect-registry-to-kind.sh'
@@ -119,8 +120,8 @@ pipeline {
                     export KUBECONFIG=${KUBECONFIG}
                     kubectl rollout status deployment/${HELM_RELEASE} -n ${K8S_NAMESPACE} --timeout=120s
                     kubectl get pods,svc -n ${K8S_NAMESPACE}
-                    curl -sf http://localhost:30080/health
-                    curl -sf http://localhost:30080/
+                    curl -sf http://host.docker.internal:30080/health
+                    curl -sf http://host.docker.internal:30080/
                 """
             }
         }

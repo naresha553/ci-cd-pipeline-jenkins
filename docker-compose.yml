@@ -16,9 +16,9 @@ services:
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
       - CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs/casc.yaml
-      - GITEA_USER=gitea
-      - GITEA_PASSWORD=gitea123
-      - SONAR_TOKEN=changeme
+      - GITEA_USER=${GITEA_USER:-gitea}
+      - GITEA_PASSWORD=${GITEA_PASSWORD:-gitea123}
+      - SONAR_TOKEN=${SONAR_TOKEN:-changeme}
     networks:
       - cicd-net
     depends_on:
