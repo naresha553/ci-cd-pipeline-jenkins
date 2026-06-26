@@ -26,4 +26,6 @@ Thumbs.db
 
 # Kind / kube
 kubeconfig
-kind-config.yaml
+# Note: terraform/kind-config.yaml IS tracked (needed by the pipeline).
+# Only ignore generated configs:
+kind-config.generated.yaml
